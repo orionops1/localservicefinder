@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getProviderBySlug } from "@/features/discovery/search-service";
+import { ProviderContactCard } from "@/components/leads/provider-contact-card";
 
 interface ProviderPageProps {
   params: Promise<{ slug: string }>;
@@ -205,59 +206,7 @@ export default async function ProviderDetailPage({ params }: ProviderPageProps) 
 
         {/* Right Column (1 col): Contact Box, Enquiry CTA, Safety Reminder */}
         <div className="space-y-6 lg:col-span-1">
-          {/* Direct Contact Card */}
-          <div className="sticky top-24 rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900 shadow-sm space-y-5">
-            <h2 className="text-base font-bold text-zinc-900 dark:text-white">
-              Contact Provider Directly
-            </h2>
-
-            <div className="space-y-3">
-              {provider.public_phone && (
-                <a
-                  href={`tel:${provider.public_phone}`}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 py-3 text-xs font-semibold text-white transition hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-white"
-                >
-                  <span>📞 Call:</span>
-                  <span>{provider.public_phone}</span>
-                </a>
-              )}
-
-              {provider.public_whatsapp && (
-                <a
-                  href={`https://wa.me/${provider.public_whatsapp.replace(/[^0-9]/g, "")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-3 text-xs font-semibold text-white transition hover:bg-emerald-700"
-                >
-                  <span>💬 Chat on WhatsApp</span>
-                </a>
-              )}
-            </div>
-
-            {/* Platform Enquiry CTA */}
-            <div className="border-t border-zinc-100 pt-5 dark:border-zinc-800">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">
-                Need a written quotation?
-              </h3>
-              <p className="text-xs text-zinc-500 leading-relaxed mb-4">
-                Send a free platform enquiry. The provider will review your requirements and respond with a price estimate.
-              </p>
-              <button
-                type="button"
-                className="w-full rounded-xl border-2 border-emerald-700 bg-emerald-50/50 py-2.5 text-xs font-bold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-300"
-              >
-                Send Service Request
-              </button>
-            </div>
-
-            {/* Community Safety Reminder */}
-            <div className="rounded-xl bg-zinc-50 p-3.5 text-[11px] leading-relaxed text-zinc-500 dark:bg-zinc-950/70 border border-zinc-100 dark:border-zinc-800">
-              <strong className="block text-zinc-700 dark:text-zinc-300 mb-1">
-                🛡️ Safety Tips for Customers:
-              </strong>
-              Always confirm the scope and estimated quotation before work begins. Never pay full amounts upfront before physical inspection.
-            </div>
-          </div>
+          <ProviderContactCard provider={provider} />
         </div>
       </div>
     </div>

@@ -165,3 +165,58 @@ export interface VerificationSubmissionRecord {
   expires_at?: string | null;
   created_at: string;
 }
+
+export type LeadStatus =
+  | "new"
+  | "viewed"
+  | "contacted"
+  | "quoted"
+  | "accepted"
+  | "in_progress"
+  | "completed"
+  | "declined"
+  | "cancelled"
+  | "disputed"
+  | "spam";
+
+export interface LeadRecord {
+  id: string;
+  customer_id: string;
+  business_id: string;
+  provider_service_id?: string | null;
+  category_id: string;
+  message: string;
+  customer_name_snapshot: string;
+  customer_contact_snapshot: string;
+  location_id?: string | null;
+  preferred_date?: string | null;
+  status: LeadStatus;
+  source: string;
+  created_at: string;
+  updated_at: string;
+  business?: {
+    name: string;
+    slug: string;
+    district?: string;
+  };
+  service?: {
+    title: string;
+  };
+}
+
+export interface LeadStatusEventRecord {
+  id: string;
+  lead_id: string;
+  changed_by: string;
+  from_status: LeadStatus;
+  to_status: LeadStatus;
+  note?: string | null;
+  created_at: string;
+}
+
+export interface FavouriteRecord {
+  customer_id: string;
+  business_id: string;
+  created_at: string;
+  business?: ProviderCardView;
+}

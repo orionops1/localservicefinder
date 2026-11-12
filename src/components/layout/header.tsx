@@ -22,6 +22,9 @@ export function Header() {
             <Link href="/services" className="transition-colors hover:text-emerald-700 dark:hover:text-emerald-400">
               Browse Categories
             </Link>
+            <Link href="/customer/enquiries" className="transition-colors hover:text-emerald-700 dark:hover:text-emerald-400">
+              My Requests
+            </Link>
             <Link href="/how-it-works" className="transition-colors hover:text-emerald-700 dark:hover:text-emerald-400">
               How It Works
             </Link>

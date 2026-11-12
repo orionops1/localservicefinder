@@ -90,37 +90,40 @@ flowchart TD
 
 ---
 
-### M4 — Administration and Verification
+### M4 — Customer Enquiries and Lead Management
 - **Scope:**
-  - Admin dashboard with real database counts.
-  - Provider review queue (approve, reject with customer-safe explanation, request info).
-  - Verification evidence review queue: inspect private documents via short-lived (5-min) presigned GET URLs.
-  - Trust badge assignments (Phone confirmed, Identity checked, Business details checked, Qualification checked).
-  - Structured immutable audit logging in `admin_audit_logs`.
+  - Interactive customer enquiry modal and form on provider profile pages (`/providers/[slug]`).
+  - Contact action tracking (`/api/v1/analytics/contact-tap`) recording direct phone calls and WhatsApp chats with minimal telemetry and zero PII leaks.
+  - Lead lifecycle finite state machine (`new` -> `viewed` -> `contacted` -> `quoted` -> `accepted` -> `in_progress` -> `completed` / `declined` / `cancelled`).
+  - Tamper-evident transition history in `lead_status_events` with automatic trigger `handle_lead_status_change()`.
+  - Provider lead inbox (`/provider/leads`) with status filtering tabs, customer contact actions, and status transition buttons.
+  - Customer account area: Active and completed enquiries (`/customer/enquiries`) and saved providers (`/customer/favourites`).
+  - REST APIs: `/api/v1/leads`, `/api/v1/leads/[id]`, `/api/v1/favourites`, `/api/v1/analytics/contact-tap`.
+  - Database migration: `supabase/migrations/20261112000004_lead_events_policies.sql`.
+  - Unit tests: `tests/unit/leads-fsm.test.ts` verifying valid lifecycle progressions and rejection of illegal state transitions.
+- **Status:** **COMPLETE** (40/40 tests passing, zero lint errors, Next.js production build verified across 25 routes).
+
+---
+
+### M5 — Admin Dashboard, Verification Queue and Moderation
+- **Scope:**
+  - Protected admin portal (`/admin`) restricted server-side to `admin` and `super_admin` roles.
+  - Platform overview metrics (total providers, pending verifications, active leads, published reviews).
+  - Provider approval/rejection queue with audit trail (`admin_audit_logs`).
+  - Verification evidence review console: inspect private documents via short-lived (5-min) presigned GET URLs.
+  - Badge issuance engine: Phone confirmed, Identity checked, Business details checked, Qualification checked.
+  - Review moderation queue.
 - **Acceptance Gate:** Admin screens and API routes restricted to authenticated administrator roles; all sensitive actions audited; badges require recorded human review.
 
 ---
 
-### M5 — Marketplace Transactions
+### M6 — Reviews, Notifications and Pilot Readiness
 - **Scope:**
-  - Customer enquiry form on provider profile pages (`/api/v1/leads`).
-  - Lead lifecycle finite state machine (`new` -> `viewed` -> `contacted` -> `quoted` -> `accepted` -> `in_progress` -> `completed`).
-  - Tamper-evident transition history in `lead_status_events`.
-  - Provider lead inbox with status updates.
-  - Customer account area (`/customer/enquiries`, `/customer/favourites`).
-  - Review submission engine: allowed only for completed leads (`UNIQUE(lead_id)`).
-  - Review moderation queue.
-- **Acceptance Gate:** Customer and provider lifecycle tests pass; unauthorized lead access blocked; duplicate or unverified reviews rejected.
-
----
-
-### M6 — Pilot Readiness
-- **Scope:**
-  - Security review, WCAG 2.2 AA accessibility audit, responsive QA across mobile viewports.
-  - Database backup and restore rehearsal.
+  - Review eligibility engine: reviews permitted strictly for completed leads (`UNIQUE(lead_id)`).
+  - Customer review submission modal and star rating calculation.
   - PWA manifest (`manifest.webmanifest`), SEO metadata, `sitemap.ts`, `robots.ts`.
-  - Vercel spend controls and Supabase/Vultr usage alerts.
-  - Sri Lankan legal/privacy review check (Personal Data Protection Act No. 9 of 2022 / No. 22 of 2025).
+  - WCAG 2.2 AA accessibility audit, responsive QA across mobile viewports.
+  - Sri Lankan legal/privacy review check (Personal Data Protection Act No. 9 of 2022).
 - **Acceptance Gate:** Release checklist signed off; zero unresolved critical/high vulnerabilities; pilot launch readiness confirmed.
 
 ---

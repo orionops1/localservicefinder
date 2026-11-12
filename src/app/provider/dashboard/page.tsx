@@ -107,6 +107,12 @@ function DashboardContent() {
           </div>
 
           <div className="flex items-center space-x-3">
+            <Link
+              href="/provider/leads"
+              className="px-4 py-2 rounded-lg bg-emerald-50 border border-emerald-300 text-xs font-bold text-emerald-800 hover:bg-emerald-100 transition-colors"
+            >
+              📥 Lead Inbox
+            </Link>
             {business?.slug && (
               <Link
                 href={`/providers/${business.slug}`}
