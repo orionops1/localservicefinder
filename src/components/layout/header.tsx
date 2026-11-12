@@ -50,6 +50,13 @@ export function Header() {
           </Link>
 
           <Link
+            href="/provider/dashboard"
+            className="hidden lg:inline-flex items-center justify-center rounded-lg border border-zinc-200 px-3.5 py-2 text-xs md:text-sm font-semibold text-zinc-700 transition-colors hover:bg-zinc-50 dark:border-zinc-800 dark:text-zinc-300 dark:hover:bg-zinc-900"
+          >
+            Provider Portal
+          </Link>
+
+          <Link
             href="/sign-in"
             className="inline-flex items-center justify-center rounded-lg bg-emerald-700 px-4 py-2 text-xs md:text-sm font-semibold text-white shadow-sm transition-colors hover:bg-emerald-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-500"
           >

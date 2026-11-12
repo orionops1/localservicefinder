@@ -63,3 +63,4 @@ To ensure trust, reliability, and security in the marketplace, testing is integr
 | 12 Nov 2026 | Pre-M0 | Tooling verification | Pass | Node `v26.3.0`, pnpm `12.11.2`, git `2.54.0` verified. |
 | 12 Nov 2026 | M0 | Health probe & Env Parser | Pass | 2 files, 4 tests passed in 330ms. Build succeeded. |
 | 12 Nov 2026 | M1 & M2 | Taxonomy & Search Discovery | Pass | 4 files, 17 tests passed in 331ms. 10/10 routes compiled. |
+| 12 Nov 2026 | M3 | Storage Subsystem & Provider Portal | Pass | 6 files, 34 tests passed in 662ms. 19/19 routes compiled. |

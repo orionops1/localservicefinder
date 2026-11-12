@@ -129,3 +129,39 @@ export interface SearchResult {
   pageSize: number;
   totalPages: number;
 }
+
+export type BusinessStatus = "draft" | "pending_review" | "approved" | "rejected" | "suspended";
+
+export interface BusinessRecord {
+  id: string;
+  owner_id: string;
+  name: string;
+  slug: string;
+  description: string;
+  business_type: "individual" | "sole_proprietor" | "registered_company";
+  registration_number?: string | null;
+  contact_email: string;
+  contact_phone: string;
+  whatsapp_number?: string | null;
+  address_line1?: string | null;
+  address_line2?: string | null;
+  locality_id?: string | null;
+  status: BusinessStatus;
+  rejection_reason?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface VerificationSubmissionRecord {
+  id: string;
+  business_id: string;
+  submitted_by: string;
+  check_type: "phone_confirmed" | "identity_checked" | "business_details_checked" | "qualification_checked";
+  private_storage_path: string;
+  status: "pending" | "approved" | "rejected" | "expired";
+  reviewer_id?: string | null;
+  decision_reason?: string | null;
+  checked_at?: string | null;
+  expires_at?: string | null;
+  created_at: string;
+}

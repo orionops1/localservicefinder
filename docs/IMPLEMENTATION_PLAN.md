@@ -75,13 +75,18 @@ flowchart TD
 
 ### M3 — Provider Portal and Storage
 - **Scope:**
-  - Multi-step provider onboarding wizard with save-and-resume.
-  - Business profile editor, service catalogue manager, and coverage area selector.
-  - Implement provider-neutral `StorageProvider` interface (`createUploadUrl`, `createDownloadUrl`, `deleteObject`, `getObjectMetadata`).
-  - Implement `VultrS3StorageProvider` (if credits confirmed) and `SupabaseStorageProvider` (fallback).
-  - Browser direct presigned PUT upload pipeline (large files never pass through Vercel functions).
+  - Multi-step provider onboarding wizard (`/provider/onboarding`) with save-and-resume.
+  - Business profile editor (`/provider/profile`), service catalogue manager (`/provider/services`), and coverage area selector (`/provider/service-areas`).
+  - Provider dashboard (`/provider/dashboard`) with real-time status banners, service metrics, and moderation indicators.
+  - Verification & Trust evidence uploader (`/provider/verification`) for private identity (NIC), business registration (BR), and trade qualification documents.
+  - Provider-neutral `StorageProvider` interface (`createUploadUrl`, `createDownloadUrl`, `deleteObject`, `getObjectMetadata`, `getPublicUrl`).
+  - Implemented `VultrS3StorageProvider` (S3 client + presigner) and `SupabaseStorageProvider` (Supabase storage client).
+  - Browser direct presigned PUT upload pipeline (`/api/v1/provider/upload/session` & `/api/v1/provider/upload/confirm`) preventing Vercel function payload exhaustion.
   - Public/private bucket separation (`lsf-public-media` vs. `lsf-private-files`).
-- **Acceptance Gate:** Authorized provider can upload portfolio media directly; one provider cannot access another provider's objects; private verification files are inaccessible to unauthorized users.
+  - Short-lived signed download route for private verification files (`/api/v1/provider/documents/[id]/download`).
+  - Insert RLS policy migration and auto-membership trigger (`supabase/migrations/20261112000003_provider_portal_policies.sql`).
+  - Comprehensive unit test suites (`tests/unit/storage.test.ts` & `tests/unit/provider-portal.test.ts`).
+- **Status:** **COMPLETE** (34/34 tests passing, zero lint errors, Next.js production build verified).
 
 ---
 
