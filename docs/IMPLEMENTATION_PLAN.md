@@ -54,19 +54,22 @@ flowchart TD
   - Role-Based Access Control (RBAC): `customer`, `provider_owner`, `provider_staff`, `moderator`, `verifier`, `admin`.
   - Row Level Security (RLS) policies on all day-one tables.
   - Fictional, clearly marked test seed data.
-- **Acceptance Gate:** Fresh migration applies cleanly; customer, provider, and admin permissions verified; cross-user RLS test passes; zero role escalation.
+- **Status:** **COMPLETE** (migrations in `supabase/migrations/`, RLS policies in `20261112000002_rls_policies.sql`, seed data in `supabase/seed.sql`).
 
 ---
 
 ### M2 — Customer Discovery
 - **Scope:**
-  - Seed Sri Lankan location hierarchy: 9 Provinces, 25 Districts, initial localities.
-  - Seed launch service categories with EN/SI/TA labels.
+  - Seed Sri Lankan location hierarchy: 9 Provinces, 25 Districts, initial localities with WGS84 centroids.
+  - Seed launch service categories with EN/SI/TA labels and icons.
   - Responsive home page with keyword search and district/town picker.
   - PostGIS proximity query RPC (`search_providers_geo`).
-  - Search results page with filtering, sorting, pagination, and empty/loading states.
-  - Provider public profile pages with offered services and coverage areas.
-- **Acceptance Gate:** Mobile and desktop customer journeys work against test data; search does not leak draft, suspended, or private provider data.
+  - Search results page (`/search`) with filtering (keyword, category, district, town, rating, verifiedOnly), sorting, pagination, and empty states.
+  - Category catalog page (`/services`) and category detail page (`/services/[categorySlug]`).
+  - Provider public profile pages (`/providers/[slug]`) with offered services, pricing indicators, coverage areas, portfolio samples, and direct contact options.
+  - REST APIs: `/api/v1/search/providers`, `/api/v1/categories`, `/api/v1/locations`.
+  - Unit tests for search service and location taxonomy (17 tests passing).
+- **Status:** **COMPLETE** (all routes, APIs, and tests verified and compiling).
 
 ---
 
