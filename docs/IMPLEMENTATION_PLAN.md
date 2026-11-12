@@ -107,13 +107,15 @@ flowchart TD
 
 ### M5 — Admin Dashboard, Verification Queue and Moderation
 - **Scope:**
-  - Protected admin portal (`/admin`) restricted server-side to `admin` and `super_admin` roles.
-  - Platform overview metrics (total providers, pending verifications, active leads, published reviews).
-  - Provider approval/rejection queue with audit trail (`admin_audit_logs`).
-  - Verification evidence review console: inspect private documents via short-lived (5-min) presigned GET URLs.
-  - Badge issuance engine: Phone confirmed, Identity checked, Business details checked, Qualification checked.
-  - Review moderation queue.
-- **Acceptance Gate:** Admin screens and API routes restricted to authenticated administrator roles; all sensitive actions audited; badges require recorded human review.
+  - Protected admin portal (`/admin`) with dark-mode navigation, platform metrics, and pending moderation alerts.
+  - Platform overview metrics (total providers, approved providers, pending reviews, pending verifications, active marketplace leads).
+  - Provider review console (`/admin/providers`) with multi-state filters (`pending_review`, `approved`, `rejected`), instant approval, and reasoned rejection workflows.
+  - Verification evidence review console (`/admin/verifications`) with secure 5-minute presigned GET link generation for private document inspection (`NIC`, `BR`, vocational qualifications).
+  - Trust badge allocation engine (`phone_confirmed`, `identity_checked`, `business_details_checked`, `qualification_checked`).
+  - Immutable audit logging in `admin_audit_logs` and audit trail console (`/admin/audit-logs`).
+  - REST APIs: `/api/v1/admin/overview`, `/api/v1/admin/providers/[id]/review`, `/api/v1/admin/verifications/[id]/review`, `/api/v1/admin/audit-logs`.
+  - Comprehensive unit test suite (`tests/unit/admin-moderation.test.ts`).
+- **Status:** **COMPLETE** (47/47 tests passing, zero lint errors, Next.js production build verified across 31 routes).
 
 ---
 

@@ -220,3 +220,28 @@ export interface FavouriteRecord {
   created_at: string;
   business?: ProviderCardView;
 }
+
+export interface AdminAuditLogRecord {
+  id: string;
+  actor_id: string;
+  action: string;
+  target_type: string;
+  target_id: string;
+  before_data?: Record<string, unknown> | null;
+  after_data?: Record<string, unknown> | null;
+  reason?: string | null;
+  created_at: string;
+  actor_name?: string;
+}
+
+export interface PlatformMetrics {
+  totalProviders: number;
+  approvedProviders: number;
+  pendingProviders: number;
+  pendingVerifications: number;
+  totalLeads: number;
+  activeLeads: number;
+  completedLeads: number;
+  totalCategories: number;
+  totalDistrictsCovered: number;
+}
