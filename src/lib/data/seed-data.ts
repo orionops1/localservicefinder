@@ -50,21 +50,106 @@ export const DISTRICTS: District[] = [
 ];
 
 export const LOCALITIES: Locality[] = [
-  // Galle
+  // 1. Colombo
+  { id: "loc-col-1", district_id: 1, slug: "kollupitiya", name_en: "Kollupitiya (Colombo 03)", name_si: "කොල්ලුපිටිය", name_ta: "கொள்ளுப்பிட்டி", lat: 6.9038, lng: 79.8510 },
+  { id: "loc-col-2", district_id: 1, slug: "dehiwala", name_en: "Dehiwala", name_si: "දෙහිවල", name_ta: "தெஹிவளை", lat: 6.8510, lng: 79.8660 },
+  { id: "loc-col-3", district_id: 1, slug: "moratuwa", name_en: "Moratuwa", name_si: "මොරටුව", name_ta: "மொறட்டுவ", lat: 6.7730, lng: 79.8829 },
+  { id: "loc-col-4", district_id: 1, slug: "nugegoda", name_en: "Nugegoda", name_si: "නුගේගොඩ", name_ta: "நுகேகொட", lat: 6.8722, lng: 79.8997 },
+  { id: "loc-col-5", district_id: 1, slug: "rajagiriya", name_en: "Rajagiriya", name_si: "රාජගිරිය", name_ta: "இராஜகிரிய", lat: 6.9092, lng: 79.8967 },
+  { id: "loc-col-6", district_id: 1, slug: "maharagama", name_en: "Maharagama", name_si: "මහරගම", name_ta: "மகரகம", lat: 6.8480, lng: 79.9265 },
+
+  // 2. Gampaha
+  { id: "loc-gam-1", district_id: 2, slug: "negombo", name_en: "Negombo", name_si: "මීගමුව", name_ta: "நீர்கொழும்பு", lat: 7.2008, lng: 79.8736 },
+  { id: "loc-gam-2", district_id: 2, slug: "wattala", name_en: "Wattala", name_si: "වත්තල", name_ta: "வத்தளை", lat: 6.9897, lng: 79.8913 },
+  { id: "loc-gam-3", district_id: 2, slug: "kelaniya", name_en: "Kelaniya", name_si: "කැලණිය", name_ta: "களனி", lat: 6.9553, lng: 79.9153 },
+  { id: "loc-gam-4", district_id: 2, slug: "kadawatha", name_en: "Kadawatha", name_si: "කඩවත", name_ta: "கடவத", lat: 7.0016, lng: 79.9532 },
+
+  // 3. Kalutara
+  { id: "loc-kal-1", district_id: 3, slug: "panadura", name_en: "Panadura", name_si: "පානදුර", name_ta: "பாணந்துறை", lat: 6.7133, lng: 79.9074 },
+  { id: "loc-kal-2", district_id: 3, slug: "kalutara-south", name_en: "Kalutara South", name_si: "කළුතර දකුණ", name_ta: "தெற்கு களுத்துறை", lat: 6.5854, lng: 79.9607 },
+  { id: "loc-kal-3", district_id: 3, slug: "horana", name_en: "Horana", name_si: "හොරණ", name_ta: "ஹொரண", lat: 6.7144, lng: 80.0631 },
+
+  // 4. Kandy
+  { id: "loc-kan-1", district_id: 4, slug: "kandy-city", name_en: "Kandy City", name_si: "මහනුවර නගරය", name_ta: "கண்டி நகரம்", lat: 7.2906, lng: 80.6337 },
+  { id: "loc-kan-2", district_id: 4, slug: "peradeniya", name_en: "Peradeniya", name_si: "පේරාදෙණිය", name_ta: "பேராதனை", lat: 7.2588, lng: 80.5969 },
+  { id: "loc-kan-3", district_id: 4, slug: "katugastota", name_en: "Katugastota", name_si: "කටුගස්තොට", name_ta: "கடுகஸ்தோட்டை", lat: 7.3247, lng: 80.6178 },
+
+  // 5. Matale
+  { id: "loc-mtl-1", district_id: 5, slug: "matale-town", name_en: "Matale Town", name_si: "මාතලේ නගරය", name_ta: "மாத்தளை நகரம்", lat: 7.4675, lng: 80.6234 },
+  { id: "loc-mtl-2", district_id: 5, slug: "dambulla", name_en: "Dambulla", name_si: "දඹුල්ල", name_ta: "தம்புள்ளை", lat: 7.8742, lng: 80.6511 },
+
+  // 6. Nuwara Eliya
+  { id: "loc-nwe-1", district_id: 6, slug: "nuwara-eliya-town", name_en: "Nuwara Eliya Town", name_si: "නුවරඑළිය නගරය", name_ta: "நுவரெலியா நகரம்", lat: 6.9497, lng: 80.7891 },
+  { id: "loc-nwe-2", district_id: 6, slug: "hatton", name_en: "Hatton", name_si: "හැටන්", name_ta: "ஹட்டன்", lat: 6.8916, lng: 80.5960 },
+
+  // 7. Galle
   { id: "loc-galle-1", district_id: 7, slug: "galle-fort", name_en: "Galle Fort", name_si: "ගාල්ල කොටුව", name_ta: "காலி கோட்டை", lat: 6.0270, lng: 80.2170 },
   { id: "loc-galle-2", district_id: 7, slug: "unawatuna", name_en: "Unawatuna", name_si: "උණවටුන", name_ta: "உனவட்டுன", lat: 6.0104, lng: 80.2505 },
   { id: "loc-galle-3", district_id: 7, slug: "hikkaduwa", name_en: "Hikkaduwa", name_si: "හික්කඩුව", name_ta: "ஹிக்கடுவ", lat: 6.1395, lng: 80.1000 },
   { id: "loc-galle-4", district_id: 7, slug: "ambalangoda", name_en: "Ambalangoda", name_si: "අම්බලන්ගොඩ", name_ta: "அம்பலாங்கொடை", lat: 6.2364, lng: 80.0543 },
-  // Colombo
-  { id: "loc-col-1", district_id: 1, slug: "colombo-03", name_en: "Kollupitiya (Colombo 03)", name_si: "කොල්ලුපිටිය", name_ta: "கொள்ளுப்பிட்டி", lat: 6.9038, lng: 79.8510 },
-  { id: "loc-col-2", district_id: 1, slug: "dehiwala", name_en: "Dehiwala", name_si: "දෙහිවල", name_ta: "தெஹிவளை", lat: 6.8510, lng: 79.8660 },
-  { id: "loc-col-3", district_id: 1, slug: "moratuwa", name_en: "Moratuwa", name_si: "මොරටුව", name_ta: "மொறட்டுவ", lat: 6.7730, lng: 79.8829 },
-  // Kandy
-  { id: "loc-kan-1", district_id: 4, slug: "kandy-city", name_en: "Kandy City", name_si: "මහනුවර නගරය", name_ta: "கண்டி நகரம்", lat: 7.2906, lng: 80.6337 },
-  // Matara
+
+  // 8. Matara
   { id: "loc-mat-1", district_id: 8, slug: "matara-town", name_en: "Matara Town", name_si: "මාතර නගරය", name_ta: "மாத்தறை நகரம்", lat: 5.9549, lng: 80.5353 },
-  // Jaffna
+  { id: "loc-mat-2", district_id: 8, slug: "weligama", name_en: "Weligama", name_si: "වැලිගම", name_ta: "வெலிகம", lat: 5.9750, lng: 80.4286 },
+  { id: "loc-mat-3", district_id: 8, slug: "mirissa", name_en: "Mirissa", name_si: "මිරිස්ස", name_ta: "மிரிஸ்ஸ", lat: 5.9482, lng: 80.4578 },
+
+  // 9. Hambantota
+  { id: "loc-hbt-1", district_id: 9, slug: "tangalle", name_en: "Tangalle", name_si: "තංගල්ල", name_ta: "தங்கalle", lat: 6.0244, lng: 80.7941 },
+  { id: "loc-hbt-2", district_id: 9, slug: "hambantota-town", name_en: "Hambantota Town", name_si: "හම්බන්තොට නගරය", name_ta: "அம்பாந்தோட்டை நகரம்", lat: 6.1246, lng: 81.1185 },
+
+  // 10. Jaffna
   { id: "loc-jaf-1", district_id: 10, slug: "jaffna-town", name_en: "Jaffna Town", name_si: "යාපනය නගරය", name_ta: "யாழ்ப்பாணம் நகரம்", lat: 9.6615, lng: 80.0074 },
+  { id: "loc-jaf-2", district_id: 10, slug: "nallur", name_en: "Nallur", name_si: "නල්ලූර්", name_ta: "நல்லூர்", lat: 9.6744, lng: 80.0298 },
+
+  // 11. Kilinochchi
+  { id: "loc-kln-1", district_id: 11, slug: "kilinochchi-town", name_en: "Kilinochchi Town", name_si: "කිලිනොච්චිය නගරය", name_ta: "கிளிநொச்சி நகரம்", lat: 9.3803, lng: 80.3992 },
+
+  // 12. Mannar
+  { id: "loc-mnr-1", district_id: 12, slug: "mannar-town", name_en: "Mannar Town", name_si: "මන්නාරම නගරය", name_ta: "மன்னார் நகரம்", lat: 8.9810, lng: 79.9044 },
+
+  // 13. Vavuniya
+  { id: "loc-vav-1", district_id: 13, slug: "vavuniya-town", name_en: "Vavuniya Town", name_si: "වවුනියාව නගරය", name_ta: "வவுனியா நகரம்", lat: 8.7514, lng: 80.4971 },
+
+  // 14. Mullaitivu
+  { id: "loc-mul-1", district_id: 14, slug: "mullaitivu-town", name_en: "Mullaitivu Town", name_si: "මුලතිව් නගරය", name_ta: "முல்லைத்தீவு நகரம்", lat: 9.2671, lng: 80.8142 },
+
+  // 15. Batticaloa
+  { id: "loc-bat-1", district_id: 15, slug: "batticaloa-town", name_en: "Batticaloa Town", name_si: "මඩකලපුව නගරය", name_ta: "மட்டக்களப்பு நகரம்", lat: 7.7102, lng: 81.6924 },
+  { id: "loc-bat-2", district_id: 15, slug: "kattankudy", name_en: "Kattankudy", name_si: "කාත්තන්කුඩි", name_ta: "காத்தான்குடி", lat: 7.6833, lng: 81.7167 },
+
+  // 16. Ampara
+  { id: "loc-amp-1", district_id: 16, slug: "ampara-town", name_en: "Ampara Town", name_si: "අම්පාර නගරය", name_ta: "அம்பாறை நகரம்", lat: 7.2912, lng: 81.6724 },
+  { id: "loc-amp-2", district_id: 16, slug: "kalmunai", name_en: "Kalmunai", name_si: "කල්මුනේ", name_ta: "கல்முனை", lat: 7.4167, lng: 81.8333 },
+
+  // 17. Trincomalee
+  { id: "loc-tri-1", district_id: 17, slug: "trincomalee-town", name_en: "Trincomalee Town", name_si: "ත්රිකුණාමලය නගරය", name_ta: "திருகோணமலை நகரம்", lat: 8.5711, lng: 81.2335 },
+
+  // 18. Kurunegala
+  { id: "loc-kur-1", district_id: 18, slug: "kurunegala-town", name_en: "Kurunegala Town", name_si: "කුරුණෑගල නගරය", name_ta: "குருநாகல் நகரம்", lat: 7.4863, lng: 80.3623 },
+  { id: "loc-kur-2", district_id: 18, slug: "kuliyapitiya", name_en: "Kuliyapitiya", name_si: "කුලියාපිටිය", name_ta: "குளியாப்பிட்டிய", lat: 7.4688, lng: 80.0401 },
+
+  // 19. Puttalam
+  { id: "loc-put-1", district_id: 19, slug: "chilaw", name_en: "Chilaw", name_si: "හලාවත", name_ta: "சிலாபம்", lat: 7.5758, lng: 79.7953 },
+  { id: "loc-put-2", district_id: 19, slug: "puttalam-town", name_en: "Puttalam Town", name_si: "පුත්තලම නගරය", name_ta: "புத்தளம் நகரம்", lat: 8.0362, lng: 79.8283 },
+
+  // 20. Anuradhapura
+  { id: "loc-anu-1", district_id: 20, slug: "anuradhapura-city", name_en: "Anuradhapura City", name_si: "අනුරාධපුර නගරය", name_ta: "அனுராதபுரம் நகரம்", lat: 8.3114, lng: 80.4037 },
+
+  // 21. Polonnaruwa
+  { id: "loc-pol-1", district_id: 21, slug: "polonnaruwa-town", name_en: "Polonnaruwa Town", name_si: "පොළොන්නරුව නගරය", name_ta: "பொலன்னறுவை நகரம்", lat: 7.9403, lng: 81.0188 },
+
+  // 22. Badulla
+  { id: "loc-bad-1", district_id: 22, slug: "badulla-town", name_en: "Badulla Town", name_si: "බදුල්ල නගරය", name_ta: "பதுளை நகரம்", lat: 6.9895, lng: 81.0557 },
+  { id: "loc-bad-2", district_id: 22, slug: "bandarawela", name_en: "Bandarawela", name_si: "බණ්ඩාරවෙල", name_ta: "பண்டாரவளை", lat: 6.8294, lng: 80.9859 },
+
+  // 23. Monaragala
+  { id: "loc-mon-1", district_id: 23, slug: "monaragala-town", name_en: "Monaragala Town", name_si: "මොණරාගල නගරය", name_ta: "மொணராகலை நகரம்", lat: 6.8728, lng: 81.3507 },
+
+  // 24. Ratnapura
+  { id: "loc-rat-1", district_id: 24, slug: "ratnapura-city", name_en: "Ratnapura City", name_si: "රත්නපුර නගරය", name_ta: "இரத்தினபுரி நகரம்", lat: 6.7056, lng: 80.3847 },
+
+  // 25. Kegalle
+  { id: "loc-keg-1", district_id: 25, slug: "kegalle-town", name_en: "Kegalle Town", name_si: "කෑගල්ල නගරය", name_ta: "கேகாலை நகரம்", lat: 7.2513, lng: 80.3464 },
 ];
 
 export const CATEGORIES: ServiceCategory[] = [

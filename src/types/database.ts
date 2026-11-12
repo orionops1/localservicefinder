@@ -93,8 +93,10 @@ export interface ProviderCardView {
     type: string;
   };
   badges: Array<{
-    type: "phone_confirmed" | "identity_checked" | "business_details_checked" | "qualification_checked";
+    type: "phone_confirmed" | "identity_checked" | "business_details_checked" | "qualification_checked" | "platform_reviewed";
     label: string;
+    checked_at?: string;
+    description?: string;
   }>;
   featured_services: string[];
   image_url?: string;
@@ -156,7 +158,7 @@ export interface VerificationSubmissionRecord {
   id: string;
   business_id: string;
   submitted_by: string;
-  check_type: "phone_confirmed" | "identity_checked" | "business_details_checked" | "qualification_checked";
+  check_type: "phone_confirmed" | "identity_checked" | "business_details_checked" | "qualification_checked" | "platform_reviewed";
   private_storage_path: string;
   status: "pending" | "approved" | "rejected" | "expired";
   reviewer_id?: string | null;

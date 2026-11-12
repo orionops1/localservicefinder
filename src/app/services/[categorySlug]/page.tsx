@@ -39,13 +39,13 @@ export default async function CategoryPage({ params }: PageProps) {
     <div className="container mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
       {/* Breadcrumbs */}
       <nav className="mb-6 flex items-center gap-2 text-xs text-zinc-500">
-        <Link href="/" className="hover:text-emerald-700">Home</Link>
+        <Link href="/" className="hover:text-[#0a2540]">Home</Link>
         <span>/</span>
-        <Link href="/services" className="hover:text-emerald-700">Categories</Link>
+        <Link href="/services" className="hover:text-[#0a2540]">Categories</Link>
         {parentCategory && (
           <>
             <span>/</span>
-            <Link href={`/services/${parentCategory.slug}`} className="hover:text-emerald-700">
+            <Link href={`/services/${parentCategory.slug}`} className="hover:text-[#0a2540]">
               {parentCategory.name_en}
             </Link>
           </>
@@ -55,17 +55,17 @@ export default async function CategoryPage({ params }: PageProps) {
       </nav>
 
       {/* Hero Header */}
-      <div className="rounded-2xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900 sm:p-8">
+      <div className="rounded-2xl border border-zinc-200/90 bg-white p-6 dark:border-zinc-800 dark:bg-[#0d1726] sm:p-8">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div className="flex items-center gap-4">
-            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-3xl dark:bg-emerald-950/60">
+            <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-zinc-100 text-3xl dark:bg-zinc-800">
               {currentCategory.icon || "🔧"}
             </span>
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-zinc-900 sm:text-3xl dark:text-white">
                 {currentCategory.name_en} Services in Sri Lanka
               </h1>
-              <p className="mt-1 text-xs text-emerald-700 dark:text-emerald-400 font-medium">
+              <p className="mt-1 text-xs text-[#0f766e] dark:text-sky-400 font-medium">
                 {currentCategory.name_si} • {currentCategory.name_ta}
               </p>
             </div>
