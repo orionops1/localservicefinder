@@ -20,7 +20,7 @@ describe("Sri Lanka Administrative Taxonomy Integrity", () => {
     });
   });
 
-  it("includes the Southern Province pilot districts (Galle, Matara, Hambantota)", () => {
+  it("includes the Southern Province districts (Galle, Matara, Hambantota)", () => {
     const southernDistricts = DISTRICTS.filter((d) => d.province_id === 3);
     expect(southernDistricts.length).toBe(3);
     const slugs = southernDistricts.map((d) => d.slug);

@@ -122,7 +122,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
                 className="mt-1.5 w-full rounded-lg border border-zinc-200 px-3 py-2 text-xs text-zinc-900 focus:border-emerald-600 focus:outline-none dark:border-zinc-700 dark:bg-zinc-800 dark:text-white"
               >
                 <option value="">All 25 Districts</option>
-                <optgroup label="Southern (Pilot Region)">
+                <optgroup label="Southern Province">
                   <option value="galle">Galle</option>
                   <option value="matara">Matara</option>
                   <option value="hambantota">Hambantota</option>
