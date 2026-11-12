@@ -1,39 +1,45 @@
-# Antigravity — First Project Prompt
+# First Antigravity Prompt — Sri Lanka Local Services Finder
 
-Read `AGENTS.md`, `PROJECT_BLUEPRINT.md`, `docs/INFRASTRUCTURE_DECISION.md` and `docs/DEPLOYMENT_RUNBOOK.md` completely before proceeding.
+Read these files before making changes:
 
-The final hosting decision is:
-- Production application: Vultr Cloud Compute in Singapore, Docker Compose + Caddy.
-- Database/authentication/geospatial: Supabase PostgreSQL + Auth + PostGIS in Singapore.
-- File storage: Vultr Object Storage in Singapore through an S3-compatible `StorageService` adapter.
-- CI/CD: GitHub Actions + GitHub Container Registry.
-- DNS: Cloudflare, with proxy/WAF enabled only after testing.
-- Vercel: optional future paid hosting target, not the production baseline. Never use Hobby for this commercial product.
+1. `AGENTS.md`
+2. `ANTIGRAVITY_ARCHITECTURE_VERCEL_VULTR_STORAGE_ONLY.md`
+3. `PROJECT_BLUEPRINT.md`
+4. `START_HERE.md`
 
-Do not generate the entire platform in one operation. Do not provision cloud services or spend credits. Do not ask for or invent production credentials.
+The architecture directive is authoritative for all hosting, deployment and storage decisions. Older plan documents mentioning Vultr Compute, Docker Compose, Caddy or Kubernetes are superseded. Do not follow them.
 
-First inspect the current workspace and report:
+## Approved architecture
 
-1. Existing files, branches, dependencies and project status.
-2. Any existing application code or assets that should be preserved.
-3. A phased implementation plan mapped to M0–M8 in `PROJECT_BLUEPRINT.md`.
-4. The first database migration sequence and the tables that need RLS from day one.
-5. The authentication, role and business-membership permission model.
-6. The separation between public provider data and private identity/customer data.
-7. How Supabase PostGIS will support nearby search.
-8. The `StorageService` interface, Vultr bucket strategy, upload confirmation and private download flow.
-9. The Docker standalone build, Docker Compose, Caddy, GitHub Actions and Vultr deployment plan.
-10. Development, staging and production environment variables; clearly separate public build-time variables from server-only runtime secrets.
-11. Backup, restore, monitoring, security and rollback strategy.
-12. Risks, dependencies and decisions that genuinely block M0.
+- Host the Next.js application on Vercel.
+- Use Supabase PostgreSQL, PostGIS and Supabase Auth.
+- Use Vultr Object Storage only for file/media storage if the owner confirms the existing promotional credits cover it. Otherwise, use Supabase Storage until Vultr is economical.
+- Connect GitHub to Vercel for automatic deployments.
+- Do not provision Vultr Compute, Kubernetes, Docker, Docker Compose, Caddy, Nginx, Redis or self-hosted databases.
+- Do not introduce Vercel Blob or other paid services without approval.
 
-Create or update:
+## Your task now
 
-- `docs/IMPLEMENTATION_PLAN.md`
-- `docs/ARCHITECTURE_DECISIONS.md`
-- `docs/SECURITY.md`
-- `docs/DATABASE.md`
-- `docs/INFRASTRUCTURE_DECISION.md` (do not contradict the approved decisions)
-- `docs/DEPLOYMENT_RUNBOOK.md`
+Do not start generating the entire product immediately. First inspect the current repository, branch, dependencies, existing components, configuration, and Git status. Preserve any existing work.
 
-Then stop and present the plan for review. Do not start feature implementation yet. Do not create fake providers, fake reviews, real user accounts, real credentials or production records. Do not claim tests or deployments have succeeded unless you ran them and can report the exact output.
+Then produce an M0 implementation plan covering:
+
+1. Current repository assessment and any risks.
+2. Next.js/TypeScript setup and minimal UI foundation.
+3. Supabase development project connection and safe environment-variable setup.
+4. GitHub-to-Vercel Preview deployment.
+5. Build, lint, typecheck and test commands.
+6. A recommended first commit sequence.
+7. Any required owner actions, clearly separated from work you can perform in the repository.
+
+After presenting the plan, implement M0 only when the repository is ready. Finish with a working local application and a Vercel Preview deployment if authorized credentials/integrations are available. Do not claim a deployment succeeded unless you verify it.
+
+## Hard constraints
+
+- Do not buy, upgrade or provision cloud services.
+- Do not consume Vultr credits without explicit owner approval.
+- Do not request or invent secrets. Provide an `.env.example` with placeholders.
+- Do not create real customers, providers or reviews; use clearly labelled fictional seed data only.
+- Do not skip RLS, authorization, validation or testing in later milestones.
+- Do not create empty boilerplate folders just to make the project look complete.
+- Do not proceed to M1 until M0 checks pass and the owner can review the result.

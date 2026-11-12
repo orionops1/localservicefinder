@@ -25,6 +25,7 @@
 *.pem
 *.zip
 lsf_antigravity_files/
+lsf_vercel_vultr_storage_only/
 
 # debug
 npm-debug.log*

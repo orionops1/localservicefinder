@@ -1,153 +1,164 @@
 # Architecture Decision Records (ADRs) — Sri Lanka Local Services Finder
 
-**Status:** Approved & Living Documentation  
-**Date:** 12 November 2026 (Updated per Authoritative Directive)  
-**Reference:** `ANTIGRAVITY_V1_VERCEL_V2_VULTR_PLAN.md`, `PROJECT_BLUEPRINT.md`, `AGENTS.md`
+**Status:** Authoritative Living Architecture Documentation  
+**Date:** 12 November 2026 (Updated per `ANTIGRAVITY_ARCHITECTURE_VERCEL_VULTR_STORAGE_ONLY.md`)  
+**Reference:** `ANTIGRAVITY_ARCHITECTURE_VERCEL_VULTR_STORAGE_ONLY.md`, `PROJECT_BLUEPRINT.md`, `AGENTS.md`
 
 ---
 
 ## Index of Architecture Decisions
 
-- [ADR-001: Staged Hosting Strategy — V1 Vercel Testing → V2 Vultr Production](#adr-001-staged-hosting-strategy--v1-vercel-testing--v2-vultr-production)
+- [ADR-001: Application Hosting — Vercel App Router Baseline](#adr-001-application-hosting--vercel-app-router-baseline)
 - [ADR-002: Managed Database, Auth & Geospatial — Supabase (Singapore)](#adr-002-managed-database-auth--geospatial--supabase-singapore)
-- [ADR-003: Storage Abstraction — Supabase Storage (V1) → Vultr S3 (V2)](#adr-003-storage-abstraction--supabase-storage-v1--vultr-s3-v2)
-- [ADR-004: Runtime Portability & Standard Node.js Architecture](#adr-004-runtime-portability--standard-nodejs-architecture)
-- [ADR-005: Authorization, RBAC & Business Memberships](#adr-005-authorization-rbac--business-memberships)
-- [ADR-006: Separation of Public Discovery and Sensitive Identity/Customer Data](#adr-006-separation-of-public-discovery-and-sensitive-identitycustomer-data)
+- [ADR-003: File Storage Strategy — Vultr Object Storage with Supabase Fallback](#adr-003-file-storage-strategy--vultr-object-storage-with-supabase-fallback)
+- [ADR-004: Direct Presigned Storage Upload Pipeline](#adr-004-direct-presigned-storage-upload-pipeline)
+- [ADR-005: Authorization, RBAC & Multi-Tenant Business Memberships](#adr-005-authorization-rbac--multi-tenant-business-memberships)
+- [ADR-006: Data Separation & Privacy (Public Commercial vs. Private Verification)](#adr-006-data-separation--privacy-public-commercial-vs-private-verification)
 - [ADR-007: Geospatial Proximity Search with PostGIS](#adr-007-geospatial-proximity-search-with-postgis)
 - [ADR-008: Lead Lifecycle State Machine & Review Eligibility](#adr-008-lead-lifecycle-state-machine--review-eligibility)
-- [ADR-009: Multilingual Data Model & Localization Strategy](#adr-009-multilingual-data-model--localization-strategy)
-- [ADR-010: V2 Containerization, GHCR & Caddy Reverse Proxy](#adr-010-v2-containerization-ghcr--caddy-reverse-proxy)
+- [ADR-009: Multilingual Data Model & Localization Strategy (EN/SI/TA)](#adr-009-multilingual-data-model--localization-strategy-ensita)
+- [ADR-010: Git-Integrated Deployment Workflow on Vercel](#adr-010-git-integrated-deployment-workflow-on-vercel)
 
 ---
 
-## ADR-001: Staged Hosting Strategy — V1 Vercel Testing → V2 Vultr Production
+## ADR-001: Application Hosting — Vercel App Router Baseline
 
 ### Context
-To validate the product quickly, we need instant preview deployments, git-based CI, and frictionless testing without prematurely spending developer time or Vultr promotional credits on infrastructure setup. However, the commercial production target remains Vultr Cloud Compute in Singapore to optimize recurring compute costs.
+Previous documents proposed deploying on Vultr Cloud Compute via Docker Compose and Caddy. The project owner has approved a simpler, serverless-first hosting model to eliminate server maintenance, OS patching, and container orchestration overhead.
 
 ### Decision
-Adopt a two-stage hosting lifecycle:
-1. **V1 (Build, Preview & Test):** Deploy the Next.js App Router application to **Vercel** via GitHub integration. Use Supabase for database, authentication, and file storage. Docker is **not** used during V1.
-2. **V2 (Production Migration):** Migrate the application container to **Vultr Cloud Compute** in Singapore (`sgp`, minimum 2 GB RAM) orchestrated with Docker Compose and Caddy. Supabase remains the managed database/auth provider.
+Deploy the Next.js App Router application exclusively to **Vercel** for all environments (development previews and commercial production).
+- No Vultr Cloud Compute instances or VPS.
+- No Docker, Docker Compose, Caddy, Nginx, or Kubernetes.
+- No self-hosted database or Redis instances.
 
 ### Consequences
-- **Positive:** Immediate velocity for product features, responsive design review, and user journey testing. Preserves Vultr promotional credits until full production launch.
-- **Rule:** Vercel is strictly a test/preview host. Core application code must avoid Vercel-proprietary primitives to ensure zero-friction migration in V2.
+- **Positive:** Instant preview deployments on pull requests, automatic global CDN edge caching, zero server operations overhead.
+- **Rule:** Vercel Hobby is permitted only for non-commercial development. When real customers begin using the platform, upgrade to an appropriate Vercel commercial plan (e.g. Pro at ~$20/mo).
 
 ---
 
 ## ADR-002: Managed Database, Auth & Geospatial — Supabase (Singapore)
 
 ### Context
-The platform requires relational integrity, PostGIS spatial queries, cookie-based SSR authentication, and Row Level Security. Self-hosting PostgreSQL on the application VM adds operational overhead and memory contention.
+The platform requires a reliable relational database, PostGIS spatial queries, cookie-based SSR authentication, and Row Level Security (RLS).
 
 ### Decision
-Use Supabase managed services in Singapore (`ap-southeast-1`):
-- PostgreSQL 15+ with PostGIS in the `extensions` schema.
-- Supabase Auth using `@supabase/ssr` (cookie-based SSR session management).
-- Managed Supabase remains constant across both V1 (Vercel) and V2 (Vultr).
+Use **Supabase** in the Singapore region (`ap-southeast-1`):
+- PostgreSQL 15+ with `postgis` enabled in `extensions` schema.
+- Supabase Auth using `@supabase/ssr` (cookie-based session management).
+- Row Level Security (RLS) enabled on all exposed tables.
 
 ### Consequences
-- **Positive:** Low latency to Sri Lanka (~40–60ms); consistent database state regardless of web host; zero database migration overhead during V1 → V2 transition.
+- **Positive:** Low latency to Sri Lanka (~40–60ms); managed backups and connection pooling; strict data isolation at the PostgreSQL layer.
 
 ---
 
-## ADR-003: Storage Abstraction — Supabase Storage (V1) → Vultr S3 (V2)
+## ADR-003: File Storage Strategy — Vultr Object Storage with Supabase Fallback
 
 ### Context
-V1 requires rapid setup without external S3 credentials. V2 requires cost-effective S3 storage on Vultr Object Storage. Business logic must not depend directly on either provider's SDK.
+Application assets include public photos (business logos, portfolio samples) and private verification documents (NICs, business registrations). The owner has promotional credits on Vultr.
 
 ### Decision
-Define a provider-neutral `StorageService` interface in `src/lib/storage/`:
-- **V1 Implementation:** `SupabaseStorageService` utilizing `@supabase/supabase-js` storage API (`provider-public` and `private-documents` buckets).
-- **V2 Implementation:** `VultrS3StorageService` utilizing `@aws-sdk/client-s3` and `@aws-sdk/s3-request-presigner` against `https://sgp1.vultrobjects.com`.
-- **Switch Mechanism:** Controlled via `STORAGE_PROVIDER=supabase` (V1) and `STORAGE_PROVIDER=vultr-s3` (V2).
+Implement a provider-neutral `StorageProvider` interface:
+```ts
+export interface StorageProvider {
+  createUploadUrl(input: CreateUploadUrlInput): Promise<UploadUrlResult>;
+  createDownloadUrl(input: CreateDownloadUrlInput): Promise<DownloadUrlResult>;
+  deleteObject(input: DeleteObjectInput): Promise<void>;
+  getObjectMetadata(input: GetObjectMetadataInput): Promise<ObjectMetadata | null>;
+}
+```
+- **Primary:** `VultrS3StorageProvider` connecting to Vultr S3-compatible Object Storage in Singapore (`https://sgp1.vultrobjects.com`), activated **only** when the owner confirms promotional credits cover the Standard $18/mo subscription.
+- **Fallback:** `SupabaseStorageProvider` connecting to Supabase Storage if Vultr credits are not confirmed or until volume justifies the dedicated subscription.
+- Selection is controlled strictly via server-side environment variable `STORAGE_PROVIDER=vultr` or `STORAGE_PROVIDER=supabase`.
 
 ---
 
-## ADR-004: Runtime Portability & Standard Node.js Architecture
+## ADR-004: Direct Presigned Storage Upload Pipeline
 
 ### Context
-Code deployed to Vercel must not become trapped in Vercel-specific runtime semantics.
+Vercel serverless functions have execution timeouts and payload size limits (4.5 MB request body limit). Uploading large images directly to Vercel functions would risk failures and unnecessary bandwidth consumption.
 
 ### Decision
-- Target standard Node.js runtime for all Server Components, Server Actions, and Route Handlers.
-- Prohibit Vercel-proprietary packages (`@vercel/blob`, `@vercel/kv`, `@vercel/postgres`, `@vercel/edge-config`).
-- Prohibit Edge Runtime for core business logic.
-- Ensure `pnpm build` creates a standard standalone output when `output: "standalone"` is toggled for V2.
+1. Client requests an upload ticket from a Next.js server route (`/api/v1/provider/media` or `/api/v1/provider/verifications`).
+2. Server validates auth, user permissions, MIME allowlist, and size limits.
+3. Server generates a random UUID object key and a short-lived (5-minute) presigned PUT URL.
+4. Browser uploads binary bytes **directly** to the object store over HTTPS.
+5. Client calls completion route; server checks object existence via `HeadObject` and persists metadata into Supabase.
 
 ---
 
-## ADR-005: Authorization, RBAC & Business Memberships
+## ADR-005: Authorization, RBAC & Multi-Tenant Business Memberships
 
 ### Context
-Users can hold multiple roles (customer, provider owner, provider staff, verifier, administrator).
+Users may be customers, provider owners, invited staff members, or platform operators.
 
 ### Decision
-- Identity is rooted in `auth.users`, mirrored to `public.profiles`.
-- System roles are stored in `public.user_roles` (`customer`, `moderator`, `verifier`, `admin`, `super_admin`).
-- Provider business access is governed by `public.business_members` (`owner`, `staff` with granular JSONB permissions).
-- Double-layer enforcement: Server-side TypeScript checks + PostgreSQL Row Level Security (RLS) on all queries.
+- Identity is rooted in `auth.users`, linked 1:1 to `public.profiles`.
+- System roles are stored in `public.user_roles` (`customer`, `moderator`, `verifier`, `admin`).
+- Provider business access is managed in `public.business_members` (`owner`, `staff` with granular JSONB permissions).
+- Double-layer enforcement: TypeScript server checks + PostgreSQL Row Level Security (RLS).
 
 ---
 
-## ADR-006: Separation of Public Discovery and Sensitive Identity/Customer Data
+## ADR-006: Data Separation & Privacy (Public Commercial vs. Private Verification)
 
 ### Context
-Public search must display approved business profiles while safeguarding customer contact information, private verification documents, and audit logs.
+National Identity Cards (NICs), passports, private residential coordinates, and customer enquiry messages must be shielded from unauthorized disclosure, complying with the Sri Lanka Personal Data Protection Act No. 9 of 2022.
 
 ### Decision
-- Public endpoints query only active approved records and return public-safe fields.
-- Verification evidence is isolated in private buckets and restricted tables, accessible only via short-lived (5-minute) presigned URLs after admin role verification.
-- Exact customer coordinates and phone numbers are stored only on specific `leads` records.
-- Sole-proprietor residential coordinates are never published; only approximate town/coverage is visible.
+- Public search surfaces only approved provider listings, business descriptions, services, and coverage localities.
+- Verification evidence is isolated in private buckets (`lsf-private-files`), accessible strictly via 5-minute presigned GET URLs after administrator role validation.
+- Customer phone numbers and message text in `leads` are accessible only to the customer and assigned provider.
+- Individual tradespersons' home addresses and exact GPS coordinates are never published; only locality names and approximate distance are surfaced.
 
 ---
 
 ## ADR-007: Geospatial Proximity Search with PostGIS
 
 ### Context
-Customers search for providers by location hierarchy (district, town) or geographic proximity.
+Customers search for providers by administrative area (district, town) or geographic distance.
 
 ### Decision
-- Centroids and operating locations are stored as `GEOGRAPHY(Point, 4326)` with spatial GiST indexes.
+- Centroids and operating bases are stored as `GEOGRAPHY(Point, 4326)` with spatial GiST indexes.
 - Distance queries execute via PostgreSQL RPC `search_providers_geo` using `ST_DWithin` and `ST_Distance`.
-- Manual fallback to administrative hierarchy (Province -> District -> Town) operates without requiring browser location permissions.
+- Administrative hierarchy (Province -> District -> Town) operates without requiring browser location permissions.
 
 ---
 
 ## ADR-008: Lead Lifecycle State Machine & Review Eligibility
 
 ### Context
-To prevent fake reviews, customer reviews must be strictly tied to completed service requests.
+Marketplace trust depends on authentic reviews tied to real transactions.
 
 ### Decision
 - Lead status follows a strict finite state machine:
   `new` -> `viewed` -> `contacted` -> `quoted` -> `accepted` -> `in_progress` -> `completed`
 - Every transition is immutably logged in `lead_status_events`.
-- Reviews are permitted **only** by the initiating customer on a `completed` lead, enforced via `UNIQUE(lead_id)`.
+- Reviews are permitted **only** by the initiating customer on a `completed` lead, enforced by `UNIQUE(lead_id)`.
 
 ---
 
-## ADR-009: Multilingual Data Model & Localization Strategy
+## ADR-009: Multilingual Data Model & Localization Strategy (EN/SI/TA)
 
 ### Context
-The platform must serve English (`en`), Sinhala (`si`), and Tamil (`ta`).
+Sri Lanka has three official/working languages: English, Sinhala, and Tamil.
 
 ### Decision
 - Database taxonomy tables (`service_categories`, `provinces`, `districts`, `localities`) include translated columns (`name_en`, `name_si`, `name_ta`).
-- UI copy is extracted into structured locale dictionary files (`src/i18n/{en,si,ta}.json`).
-- User locale preference is persisted in `profiles.preferred_locale` and a `NEXT_LOCALE` cookie.
+- UI copy is managed via structured locale files.
+- User preference is stored in `profiles.preferred_locale` and a cookie.
 
 ---
 
-## ADR-010: V2 Containerization, GHCR & Caddy Reverse Proxy
+## ADR-010: Git-Integrated Deployment Workflow on Vercel
 
 ### Context
-When migrating to V2 production, reproducible builds and zero-downtime deployment are required.
+Predictable CI/CD without maintaining self-hosted build runners.
 
 ### Decision
-- GitHub Actions builds a multi-stage Docker image on merge to `main`, tags it with the immutable commit SHA, and pushes to GHCR.
-- The Vultr VM pulls the exact immutable SHA image and runs it behind Caddy reverse proxy via Docker Compose.
-- Caddy provides automatic TLS (Let's Encrypt / ZeroSSL) and security headers.
+- GitHub repository connects directly to Vercel.
+- Pull requests automatically generate Vercel Preview deployments.
+- Merges to `main` deploy to Vercel Production.
+- Pre-merge checks enforce `pnpm lint`, `pnpm typecheck`, `pnpm test`, and `pnpm build`.

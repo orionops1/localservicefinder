@@ -1,21 +1,25 @@
+> **CURRENT HOSTING / STORAGE OVERRIDE (12 November 2026):** This file contains earlier infrastructure planning in some sections. For all hosting, deployment, Docker, server, Kubernetes and file-storage decisions, follow `ANTIGRAVITY_ARCHITECTURE_VERCEL_VULTR_STORAGE_ONLY.md`. The current decision is Vercel for the application, Supabase for PostgreSQL/PostGIS/Auth, and Vultr Object Storage only if promotional credits are confirmed to cover it. Do not provision Vultr Compute or Kubernetes. This note supersedes conflicting infrastructure passages below; product and functional requirements remain applicable.
+
 # Sri Lanka Local Services Finder — Product & Technical Blueprint
 
 **Document type:** Product requirements, architecture, database design, delivery plan and Antigravity implementation guide  
 **Project status:** Greenfield / planning baseline  
 **Initial market:** Sri Lanka  
 **Primary delivery:** Responsive web application + Progressive Web App (PWA)  
-**Production hosting:** Vultr Cloud Compute (Docker)  
-**Database / authentication:** Supabase (Singapore)  
-**File storage:** Vultr Object Storage (Singapore)  
-**Optional future hosting target:** Vercel Pro or another Node.js-compatible platform  
+**V1 testing hosting:** Vercel  
+**V1 database / authentication / file storage:** Supabase (PostgreSQL, PostGIS, Auth and Storage)  
+**V2 production hosting:** Vultr Cloud Compute (Docker Compose + Caddy)  
+**V2 production file storage:** Vultr Object Storage (Singapore)  
 **Development environment:** Google Antigravity  
 **Proposed working name:** `Local Services Finder` (replace with final brand name before launch)
+
+> **Staged infrastructure authority:** Read `ANTIGRAVITY_V1_VERCEL_V2_VULTR_PLAN.md`. That document controls all V1/V2 hosting, deployment, Docker and storage decisions. This blueprint remains the product and functional requirements source. When older infrastructure details in this blueprint conflict with the staged plan, follow the staged plan and update the conflicting documentation.
 
 ---
 
 ## 0. Instructions for the development agent
 
-Treat this document as the product source of truth. Build the product in small, reviewable phases. Do not attempt to generate the entire marketplace in one pass.
+Treat this document as the product requirements source of truth. Treat `ANTIGRAVITY_V1_VERCEL_V2_VULTR_PLAN.md` as the authoritative infrastructure and deployment source of truth. Build the product in small, reviewable phases. Do not attempt to generate the entire marketplace in one pass.
 
 Before writing implementation code:
 
@@ -373,13 +377,13 @@ Paid placements must be labelled “Sponsored” and kept distinct from organic 
 
 Use PostgreSQL text search and `pg_trgm` for practical fuzzy matching. Use PostGIS for distance and area queries. For Sinhala/Tamil tokenisation, test real queries and maintain curated synonym tables; do not assume the default English text-search configuration handles every language well.
 
-## 7. Final technical architecture — cost-first and portable
+## 7. Final technical architecture — staged, cost-conscious and portable
 
 ### Architecture decision
 
-**Production application hosting is Vultr Cloud Compute in Singapore, deployed as a Dockerised Next.js application.** Supabase provides managed PostgreSQL, Auth and PostGIS. Vultr Object Storage stores public media, private verification documents and encrypted database backups. Cloudflare can provide authoritative DNS and, after testing, web-proxy/WAF services. GitHub Actions builds and deploys versioned containers.
+The approved delivery sequence is **V1 testing on Vercel, followed by a V2 production infrastructure migration to the previously agreed Vultr architecture**. V1 uses Vercel for the Next.js application and Supabase for PostgreSQL, Auth, PostGIS and file storage. V2 moves the Next.js application to Vultr Cloud Compute in Singapore using Docker Compose + Caddy, retains Supabase for PostgreSQL/Auth/PostGIS and moves file storage to Vultr Object Storage. GitHub Actions + GHCR and Cloudflare are introduced for V2 as described in `ANTIGRAVITY_V1_VERCEL_V2_VULTR_PLAN.md`.
 
-Vercel is an optional future hosting target, not the default production host. Do not use Vercel Hobby for this commercial product: Vercel restricts Hobby to personal, non-commercial use. A future move to Vercel requires a commercial plan and a cost/benefit review. Keep the application compatible with ordinary Node.js and Docker so the hosting choice can change without a rewrite.
+This section's detailed Vultr compute, Docker and object-storage configuration describes the **V2 target**, not an immediate V1 requirement. Do not provision Vultr resources or consume credits during V1. Docker is not a V1 deployment dependency. Keep the app portable to standard Node.js and implement a provider-neutral `StorageService` so the V1 Supabase Storage adapter can be replaced by the V2 Vultr S3 adapter without rewriting feature code.
 
 ### Architecture overview
 
@@ -439,7 +443,7 @@ flowchart TD
 
 ### Object storage layout and upload flow
 
-Use a provider-neutral `StorageService` interface backed initially by Vultr's S3-compatible API. Do not call the AWS SDK directly from page components or domain services.
+Use a provider-neutral `StorageService` interface. The V1 adapter is Supabase Storage; the V2 adapter is Vultr's S3-compatible API. Do not call either storage SDK directly from page components or domain services. See `ANTIGRAVITY_V1_VERCEL_V2_VULTR_PLAN.md` for the migration rules.
 
 Create separate buckets (or equivalent isolated policies):
 
@@ -1029,7 +1033,9 @@ This blueprint is a product/engineering plan, not legal advice. Also obtain advi
 
 ## 17. Environment variables and secrets
 
-Create `.env.example` with placeholders only. Maintain different values for local development, staging and production. The production `.env.production` file lives on the Vultr host with restrictive permissions (for example, owner read/write only) and is never committed.
+Create `.env.example` with placeholders only. Maintain separate values for local development, V1 Vercel Preview/test and V2 Vultr production. V1 must configure Supabase Storage buckets and must not require Vultr credentials. V2-only Vultr variables are added when the V2 S3 adapter is implemented. Store Vercel variables in the correct Vercel environment; the V2 `.env.production` file, if used, lives on the Vultr host with restrictive permissions and is never committed.
+
+The environment block below describes the **V2 target configuration**. For V1 set `STORAGE_PROVIDER=supabase` and configure Supabase public/private bucket names; do not set or require Vultr credentials.
 
 ```bash
 # Runtime / public app configuration
@@ -1138,7 +1144,9 @@ Important:
 - Mobile, tablet and desktop smoke tests pass.
 - Privacy, terms, provider terms and moderation workflows are reviewed.
 
-## 19. Production deployment plan — Vultr + Docker
+## 19. V2 production deployment plan — Vultr + Docker
+
+This deployment section is for V2 only. V1 test deployment is performed on Vercel with Supabase Storage, following `ANTIGRAVITY_V1_VERCEL_V2_VULTR_PLAN.md` and `docs/DEPLOYMENT_RUNBOOK.md`. Do not execute Vultr provisioning steps during V1.
 
 ### Repository workflow
 

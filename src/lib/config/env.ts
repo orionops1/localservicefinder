@@ -8,7 +8,7 @@ const publicEnvSchema = z.object({
 
 const serverEnvSchema = z.object({
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).optional(),
-  STORAGE_PROVIDER: z.enum(["supabase", "vultr-s3"]).default("supabase"),
+  STORAGE_PROVIDER: z.enum(["supabase", "vultr", "vultr-s3"]).default("supabase"),
   SUPABASE_STORAGE_PUBLIC_BUCKET: z.string().default("provider-public"),
   SUPABASE_STORAGE_PRIVATE_BUCKET: z.string().default("private-documents"),
 });

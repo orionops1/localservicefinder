@@ -1,37 +1,26 @@
-# Start Here — Antigravity Workspace
+# Start Here — Sri Lanka Local Services Finder
 
-This is the finalized, cost-first infrastructure and product blueprint for the Sri Lanka Local Services Finder.
+## Current architecture decision
 
-## Approved hosting decision
+**Vercel hosts the application. Supabase provides database, authentication and geospatial search. Vultr is used only for Object Storage if existing credits are confirmed to cover it.**
 
-- Production app: Vultr Cloud Compute, Singapore, Docker Compose + Caddy.
-- Database/Auth/geo: Supabase PostgreSQL + Auth + PostGIS, Singapore.
-- Files: Vultr Object Storage, Singapore, S3-compatible `StorageService` adapter.
-- CI/CD: GitHub Actions + GitHub Container Registry.
-- DNS: Cloudflare DNS; enable proxy only after testing.
-- Vercel: optional future paid migration target, not required for MVP.
+No Vultr Compute, VPS, Kubernetes, Docker, Docker Compose, Caddy or Nginx is required. Do not follow older documents that describe a Vultr Compute production migration.
 
-## Files to read first
+## Files to read in order
 
-1. `AGENTS.md` — persistent engineering and security rules.
-2. `PROJECT_BLUEPRINT.md` — product scope, modules, data model, APIs and M0–M8 milestones.
-3. `docs/INFRASTRUCTURE_DECISION.md` — approved infrastructure and cost guardrails.
-4. `docs/DEPLOYMENT_RUNBOOK.md` — production deployment, security, backup and rollback.
-5. `ANTIGRAVITY_FIRST_PROMPT.md` — paste this into Antigravity for the first planning task.
+1. `AGENTS.md` — persistent Antigravity workspace rules.
+2. `ANTIGRAVITY_ARCHITECTURE_VERCEL_VULTR_STORAGE_ONLY.md` — authoritative architecture, security, storage design and development gates.
+3. `PROJECT_BLUEPRINT.md` — product requirements and feature scope; ignore older hosting/storage sections that conflict with the current architecture directive.
+4. `ANTIGRAVITY_FIRST_PROMPT.md` — initial prompt for Antigravity.
 
-## First development session
+## First steps
 
-1. Create a private GitHub repository and put this folder's contents at its root.
+1. Extract this package into the project repository.
 2. Open the repository in Antigravity.
-3. Paste the complete contents of `ANTIGRAVITY_FIRST_PROMPT.md` as the first instruction.
-4. Ask Antigravity to inspect and create its implementation plan, then stop for review.
-5. Approve M0 only after reviewing the plan.
+3. Paste the contents of `ANTIGRAVITY_FIRST_PROMPT.md` as the first instruction.
+4. Ask Antigravity to inspect the repository and present an M0 plan.
+5. Review the plan; proceed with M0 only.
 
-## Important account-owner actions
+## Cost warning
 
-- Check Vultr credit balance, expiration and eligible products before provisioning anything.
-- Create service accounts and enter real secrets directly into provider dashboards or the protected server environment.
-- Do not paste production secrets into Antigravity chat or commit them to GitHub.
-- Do not launch a public pilot on Supabase Free. Upgrade production to a paid plan with backups before real customers rely on it.
-
-The Dockerfile, Compose and Caddy files in this package are starter templates. Antigravity must validate them against the actual generated Next.js project, current Node.js LTS, health endpoint and chosen GitHub workflow before production use.
+Vultr Object Storage Standard is currently listed at US$18/month. Do not provision it until the owner verifies that promotional credits cover the subscription. For a small test, Supabase Storage's Free allowance may be sufficient. Vercel Hobby is for personal/non-commercial use; use an appropriate commercial plan before commercial production.
