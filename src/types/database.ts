@@ -245,3 +245,22 @@ export interface PlatformMetrics {
   totalCategories: number;
   totalDistrictsCovered: number;
 }
+
+export type ReviewStatus = "pending_moderation" | "published" | "rejected" | "flagged";
+
+export interface ReviewRecord {
+  id: string;
+  lead_id: string;
+  business_id: string;
+  customer_id: string;
+  rating: number;
+  quality_rating?: number | null;
+  punctuality_rating?: number | null;
+  communication_rating?: number | null;
+  comment?: string | null;
+  status: ReviewStatus;
+  published_at?: string | null;
+  created_at: string;
+  customer_name?: string;
+  business_name?: string;
+}

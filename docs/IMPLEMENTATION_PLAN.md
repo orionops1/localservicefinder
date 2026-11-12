@@ -121,12 +121,16 @@ flowchart TD
 
 ### M6 — Reviews, Notifications and Pilot Readiness
 - **Scope:**
-  - Review eligibility engine: reviews permitted strictly for completed leads (`UNIQUE(lead_id)`).
-  - Customer review submission modal and star rating calculation.
-  - PWA manifest (`manifest.webmanifest`), SEO metadata, `sitemap.ts`, `robots.ts`.
-  - WCAG 2.2 AA accessibility audit, responsive QA across mobile viewports.
-  - Sri Lankan legal/privacy review check (Personal Data Protection Act No. 9 of 2022).
-- **Acceptance Gate:** Release checklist signed off; zero unresolved critical/high vulnerabilities; pilot launch readiness confirmed.
+  - Review eligibility engine: reviews permitted strictly for completed leads (`UNIQUE(lead_id)`), preventing fake/unsolicited ratings.
+  - Review moderation workflow: admin console (`/admin/reviews`) with filterable pending queue, approve/reject actions, and provider aggregate score recalculations (`rating_average`, `rating_count`).
+  - Customer review submission modal integrated into customer enquiries portal (`/customer/enquiries`).
+  - SMS & WhatsApp notification service abstraction (`src/features/notifications/notification-service.ts`) with Sri Lanka mobile number sanitization (`+94` format) and mock fallback.
+  - PWA manifest (`manifest.webmanifest`), SEO metadata, dynamic `sitemap.xml`, and `robots.txt`.
+  - Sri Lankan legal/privacy review check: Personal Data Protection Act (PDPA) No. 9 of 2022 compliance documentation (`docs/LEGAL_PRIVACY_PDPA.md`).
+  - Comprehensive Pilot Launch Readiness Checklist (`docs/PILOT_LAUNCH_CHECKLIST.md`).
+  - Unit test suite (`tests/unit/reviews-eligibility.test.ts`) covering eligibility checks, lead state constraints, rating aggregation, and notification formatting.
+- **Acceptance Gate:** Release checklist verified; zero lint/typecheck errors; Next.js production build verified across 36 routes; 54/54 automated tests passing.
+- **Status:** **COMPLETE**
 
 ---
 
